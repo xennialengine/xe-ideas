@@ -38,5 +38,7 @@ jobs:
         dotnet-version: 3.0.100
     - name: Build with dotnet
       run: |
+        echo "test"
         cd src/XeIdeas/
+        pwd
         dotnet build --configuration Release
