@@ -31,3 +31,12 @@ jobs:
       run: |
         echo Add other actions to build,
         echo test, and deploy your project.
+
+    # Build the application
+    - name: Setup .NET Core
+      with:
+        dotnet-version: 3.0.100
+    - name: Build with dotnet
+      run: |
+        cd src/
+        dotnet build --configuration Release
