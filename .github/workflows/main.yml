@@ -29,7 +29,12 @@ jobs:
       with:
         dotnet-version: 3.0.100
         
-    - name: Build with dotnet
+    - name: Build Projects
       run: |
         cd src/XeIdeas/
         dotnet build --configuration Release
+
+    - name: Run Unit Tests
+      run: |
+        cd ../../tests/XeIdeas.Tests/
+        dotnet test
