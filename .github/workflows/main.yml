@@ -40,6 +40,7 @@ jobs:
     - name: Build with dotnet
       run: |
         echo "test"
-        cd src/XeIdeas/
         pwd
+        ls
+        cd src/XeIdeas/
         dotnet build --configuration Release
