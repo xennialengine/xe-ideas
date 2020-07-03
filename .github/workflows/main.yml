@@ -27,11 +27,16 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.0.100
+        dotnet-version: 3.1
         
     - name: Build Projects
       run: |
         cd src/XeIdeas/
+        dotnet build --configuration Release
+        
+    - name: Build xe-ideas
+      run: |
+        cd src/xe-ideas/
         dotnet build --configuration Release
 
     - name: Run Unit Tests
