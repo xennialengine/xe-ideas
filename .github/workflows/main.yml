@@ -33,6 +33,11 @@ jobs:
       run: |
         cd src/XeIdeas/
         dotnet build --configuration Release
+        
+    - name: Build xe-ideas
+      run: |
+        cd src/xe-ideas/
+        dotnet build --configuration Release
 
     - name: Run Unit Tests
       run: |
