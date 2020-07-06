@@ -11,6 +11,11 @@ using xe_ideas.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using xe_ideas.Data.Repositories.EntityFramework;
+using xe_ideas.Data.Repositories.Interfaces;
+using xe_ideas.Services;
+using xe_ideas.Services.Interfaces;
+using xe_ideas.Services.LookUp;
 
 namespace xe_ideas
 {
@@ -47,6 +52,15 @@ namespace xe_ideas
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+
+            services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IIdeaRepository, IdeaRepository>();
+
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IIdeaService, IdeaService>();
+            services.AddScoped<ILookUpService, LookUpService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

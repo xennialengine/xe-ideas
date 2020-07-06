@@ -2,12 +2,8 @@
 
 namespace xe_ideas.Models.LookUp
 {
-    public class IdeaPrivacy
+    public class IdeaPrivacy : BaseLookUpModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-
         public static IEnumerable<IdeaPrivacy> GetValues()
         {
             yield return IdeaPrivacy.Private;
