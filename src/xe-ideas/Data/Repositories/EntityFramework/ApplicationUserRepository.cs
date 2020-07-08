@@ -18,7 +18,9 @@ namespace xe_ideas.Data.Repositories.EntityFramework
 
         public IQueryable<IdentityUser> GetByUsername(string username)
         {
-            return this.Context.Users.Where(x => x.UserName.ToUpper() == username.ToUpper());
+            return (string.IsNullOrWhiteSpace(username))
+                ? Enumerable.Empty<IdentityUser>().AsQueryable()
+                : this.Context.Users.Where(x => x.UserName.ToUpper() == username.ToUpper());
         }
     }
 }
