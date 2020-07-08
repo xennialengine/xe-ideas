@@ -14,12 +14,11 @@ namespace xe_ideas.Data.Repositories.EntityFramework
         public ApplicationUserRepository(ApplicationDbContext context)
         {
             this.Context = context;
-            this.DbSet = this.Context.Set<IdentityUser>();
         }
 
         public IQueryable<IdentityUser> GetByUsername(string username)
         {
-            return this.DbSet.Where(x => x.UserName.ToUpper() == username.ToUpper());
+            return this.Context.Users.Where(x => x.UserName.ToUpper() == username.ToUpper());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace xe_ideas.Models
 {
@@ -7,9 +8,12 @@ namespace xe_ideas.Models
         public int Id { get; set; }
 
         public string CreatorId { get; set; }
+        [JsonIgnore]
         public ApplicationUser Creator { get; set; }
 
         public int IdeaId { get; set; }
+
+        [JsonIgnore]
         public Idea Idea { get; set; }
 
         public string Content { get; set; }

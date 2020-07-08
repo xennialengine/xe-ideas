@@ -110,7 +110,20 @@ namespace xe_ideas.Services
         {
             var user = this.applicationUserRepository.GetByUsername(username).FirstOrDefault();
 
-            return this.ideaRepository.GetByCreatorId(user.Id);
+            if (user != null) 
+            {
+                var list = this.ideaRepository.GetByCreatorId(user.Id);
+
+                // TODO check privacy
+                // return (user.UserName == context.CurrentUser.UserName)
+                //     ? list
+                //     : list.Where(x => x.PrivacyId == IdeaPrivacy.Public.Id);
+
+                // For now, return everything
+                return list;
+            }
+
+            return Enumerable.Empty<Idea>();
         }
 
         public void Update(ApplicationContext context, Idea item)

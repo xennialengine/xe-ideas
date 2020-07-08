@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,12 +15,8 @@ namespace xe_ideas.Controllers.Api
     [Route("api/[controller]")]
     public class IdeaController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<WeatherForecastController> _logger;
+        public ApplicationContext Context;
         private readonly IIdeaService ideaService;
 
         public IdeaController(ILogger<WeatherForecastController> logger, IIdeaService ideaService)
@@ -31,12 +28,23 @@ namespace xe_ideas.Controllers.Api
         [HttpGet]
         public IEnumerable<Idea> Get(string username)
         {
-            ApplicationContext context = new ApplicationContext()
+            this.Context = this.CreateApplicationContext((ClaimsIdentity)HttpContext.User.Identity);
+
+            return this.ideaService.GetByCreatorUsername(this.Context, username);
+        }
+        
+
+        protected ApplicationContext CreateApplicationContext(ClaimsIdentity identity)
+        {
+            return new ApplicationContext()
             {
-
+                CurrentUser = new ApplicationUser()
+                {
+                    // TODO add userId and username to JWT payload
+                    //Id = identity.Claims.FirstOrDefault(x => x.Type == "userId").Value,
+                    //UserName = identity.Claims.FirstOrDefault(x => x.Type == "username").Value
+                }
             };
-
-            return this.ideaService.GetByCreatorId(context, "6761d1ea-06bb-4c3e-b24e-8a7865bf094b");
         }
     }
 }
