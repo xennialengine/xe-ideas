@@ -101,18 +101,32 @@ namespace xe_ideas.Services
             return item;
         }
 
-        public IEnumerable<Idea> GetByCreatorId(ApplicationContext context, string creatorId)
+        public IEnumerable<Idea> GetAllPublic(ApplicationContext context, int skip = 0, int take = 50)
         {
-            return this.ideaRepository.GetByCreatorId(creatorId);
+            return this.ideaRepository
+                       .GetAllPublic()
+                       .Skip(skip)
+                       .Take(take);
         }
 
-        public IEnumerable<Idea> GetByCreatorUsername(ApplicationContext context, string username)
+        public IEnumerable<Idea> GetByCreatorId(ApplicationContext context, string creatorId, int skip = 0, int take = 50)
+        {
+            return this.ideaRepository
+                       .GetByCreatorId(creatorId)
+                       .Skip(skip)
+                       .Take(take);
+        }
+
+        public IEnumerable<Idea> GetByCreatorUsername(ApplicationContext context, string username, int skip = 0, int take = 50)
         {
             var user = this.applicationUserRepository.GetByUsername(username).FirstOrDefault();
 
             if (user != null) 
             {
-                var list = this.ideaRepository.GetByCreatorId(user.Id);
+                var list = this.ideaRepository
+                               .GetByCreatorId(user.Id)
+                               .Skip(skip)
+                               .Take(take);
 
                 // TODO check privacy
                 // return (user.UserName == context.CurrentUser.UserName)

@@ -30,7 +30,9 @@ namespace xe_ideas.Controllers.Api
         {
             this.Context = this.CreateApplicationContext((ClaimsIdentity)HttpContext.User.Identity);
 
-            return this.ideaService.GetByCreatorUsername(this.Context, username);
+            return string.IsNullOrWhiteSpace(username)
+                ? this.ideaService.GetAllPublic(this.Context)
+                : this.ideaService.GetByCreatorUsername(this.Context, username);
         }
         
 
