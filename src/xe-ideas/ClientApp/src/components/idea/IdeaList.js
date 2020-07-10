@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import authService from '../api-authorization/AuthorizeService'
+import { Link } from 'react-router-dom';
+import authService from '../api-authorization/AuthorizeService';
 
 export class IdeaList extends Component {
   static displayName = IdeaList.name;
@@ -23,16 +24,22 @@ export class IdeaList extends Component {
             <th>Idea</th>
             <th>Description</th>
             <th>LastModified</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {ideas.map(idea =>
             <tr key={idea.id}>
-              <td>{idea.privacyId == 2 ? "\u2713" : ""}</td>
+              <td>{idea.privacyId === 2 ? "\u2713" : ""}</td>
               <td>{idea.creatorId}</td>
               <td>{idea.name}</td>
               <td>{idea.description}</td>
               <td>{idea.lastModifiedDate}</td>
+              <td>
+                  <Link to={`/i/${idea.id}/`}>View</Link>
+                  |
+                  <Link to={`/i/${idea.id}/edit`}>Edit</Link>
+              </td>
             </tr>
           )}
         </tbody>
