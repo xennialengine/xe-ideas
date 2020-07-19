@@ -47,6 +47,17 @@ namespace xe_ideas.Controllers.Api
                 ? this.ideaService.GetAllPublic(this.Context)
                 : this.ideaService.GetByCreatorUsername(this.Context, username);
         }
+
+        
+
+        [HttpPut]
+        [Route("api/idea/{ideaId}")]
+        public void Update(string username, Idea idea)
+        {
+            this.Context = this.CreateApplicationContext((ClaimsIdentity)HttpContext.User.Identity);
+
+            this.ideaService.Update(this.Context, idea);
+        }
         
 
         protected ApplicationContext CreateApplicationContext(ClaimsIdentity identity)

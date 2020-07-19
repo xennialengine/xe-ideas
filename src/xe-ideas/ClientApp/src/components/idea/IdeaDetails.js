@@ -56,7 +56,6 @@ export class IdeaDetails extends Component {
       ? <p><em>Loading...</em></p>
       : IdeaDetails.renderTable(this.state.idea);
 
-      console.log(this.state.idea);
     let title = this.state.idea
       ? `${this.state.idea.name}`
       : "Content not found.";
