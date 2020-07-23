@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using xe_ideas.Models;
 using xe_ideas.Services.Interfaces;
 
@@ -14,14 +13,14 @@ namespace xe_ideas.Controllers.Api
     [ApiController]
     public class IdeaController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
         public ApplicationContext Context;
         private readonly IIdeaService ideaService;
+        private readonly ICommentService commentService;
 
-        public IdeaController(ILogger<WeatherForecastController> logger, IIdeaService ideaService)
+        public IdeaController(IIdeaService ideaService, ICommentService commentService)
         {
-            this._logger = logger;
             this.ideaService = ideaService;
+            this.commentService = commentService;
         }
 
         [HttpGet]
@@ -34,6 +33,9 @@ namespace xe_ideas.Controllers.Api
 
             // TODO check to make sure the user has permission to view this
             
+            // Get associated comments
+            idea.Comments = this.commentService.GetByIdeaId(this.Context, ideaId).ToList();
+
             return idea;
         }
 

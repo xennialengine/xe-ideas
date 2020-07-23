@@ -16,38 +16,32 @@ export class IdeaDetails extends Component {
 
   static renderTable(idea) {
     return (
-        <table className='table table-striped' aria-labelledby="tabelLabel">
-          <tbody>
-            <tr>
-                <th>ID</th>
-                <td>{idea.id}</td>
-            </tr>
-            <tr>
-                <th>owner</th>
-                <td>{idea.creatorId}</td>
-            </tr>
-            <tr>
-                <th>Privacy</th>
-                <td>{idea.privacyId === 1 ? "Private" : "Public"}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{idea.name}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{idea.description}</td>
-            </tr>
-            <tr>
-                <th>Created Date</th>
-                <td>{idea.createdDate}</td>
-            </tr>
-            <tr>
-                <th>Last Modified Date</th>
-                <td>{idea.lastModifiedDate}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div>
+        <p>By {idea.creatorId}</p>
+        <p>{idea.description}</p>
+        <div>
+          Comments:
+          <table className='table table-striped' aria-labelledby="tabelLabel">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Date</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody>
+              {idea.comments.map(comment =>
+                <tr key={comment.id}>
+                  <td>{comment.creatorId}</td>
+                  <td>{comment.createdDate}</td>
+                  <td>{comment.content}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
     );
   }
 
