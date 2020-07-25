@@ -64,16 +64,22 @@ namespace xe_ideas.Services
             }
         }
 
-        public IEnumerable<Comment> GetByCreatorId(ApplicationContext context, string creatorId)
+        public IEnumerable<Comment> GetByCreatorId(ApplicationContext context, string creatorId, int skip = 0, int take = 50)
         {
-            return this.commentRepository.GetByCreatorId(creatorId);
+            return this.commentRepository.GetByCreatorId(creatorId)
+                       .Skip(skip)
+                       .Take(take)
+                       .Include(x => x.Creator);
         }
 
-        public IEnumerable<Comment> GetByCreatorUsername(ApplicationContext context, string username)
+        public IEnumerable<Comment> GetByCreatorUsername(ApplicationContext context, string username, int skip = 0, int take = 50)
         {
             var user = this.applicationUserRepository.GetByUsername(username).FirstOrDefault();
 
-            return this.commentRepository.GetByCreatorId(user.Id);
+            return this.commentRepository.GetByCreatorId(user.Id)
+                       .Skip(skip)
+                       .Take(take)
+                       .Include(x => x.Creator);
         }
 
         public Comment GetById(ApplicationContext context, int id)
@@ -81,9 +87,12 @@ namespace xe_ideas.Services
             return this.commentRepository.GetById(id);
         }
 
-        public IEnumerable<Comment> GetByIdeaId(ApplicationContext context, int ideaId)
+        public IEnumerable<Comment> GetByIdeaId(ApplicationContext context, int ideaId, int skip = 0, int take = 50)
         {
-            return this.commentRepository.GetByIdeaId(ideaId);
+            return this.commentRepository.GetByIdeaId(ideaId)
+                       .Skip(skip)
+                       .Take(take)
+                       .Include(x => x.Creator);
         }
 
         public void Update(ApplicationContext context, Comment item)

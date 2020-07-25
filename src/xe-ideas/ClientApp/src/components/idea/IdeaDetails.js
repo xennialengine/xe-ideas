@@ -34,7 +34,7 @@ export class IdeaDetails extends Component {
             <tbody>
               {idea.comments.map(comment =>
                 <tr key={comment.id}>
-                  <td>{comment.creatorId}</td>
+                  <td>{comment.creator.userName}</td>
                   <td>{comment.createdDate}</td>
                   <td>{comment.content}</td>
                 </tr>

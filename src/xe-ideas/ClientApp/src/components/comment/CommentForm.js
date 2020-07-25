@@ -60,7 +60,11 @@ export class CommentForm extends Component {
           return;
         }
 
+        // Update the parent's list of comments
         this.props.onCommentAdded(response);
+
+        // Clear out the form
+        this.setState({ comment: "" });
       });
   };
 }

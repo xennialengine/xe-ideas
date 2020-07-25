@@ -23,7 +23,6 @@ export class IdeaList extends Component {
             <th>User</th>
             <th>Idea</th>
             <th>Description</th>
-            <th>LastModified</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -31,10 +30,9 @@ export class IdeaList extends Component {
           {ideas.map(idea =>
             <tr key={idea.id}>
               <td>{idea.privacyId === 2 ? "\u2713" : ""}</td>
-              <td>{idea.creatorId}</td>
+              <td>{idea.creator?.userName}</td>
               <td>{idea.name}</td>
               <td>{idea.description}</td>
-              <td>{idea.lastModifiedDate}</td>
               <td>
                   <Link to={`/i/${idea.id}/`}>View</Link>
                   |

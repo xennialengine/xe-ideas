@@ -107,7 +107,8 @@ namespace xe_ideas.Services
             return this.ideaRepository
                        .GetAllPublic()
                        .Skip(skip)
-                       .Take(take);
+                       .Take(take)
+                       .Include(x => x.Creator);
         }
 
         public IEnumerable<Idea> GetByCreatorId(ApplicationContext context, string creatorId, int skip = 0, int take = 50)
