@@ -1,19 +1,15 @@
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
-using xe_ideas.Data;
-using xe_ideas.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using xe_ideas.Data;
 using xe_ideas.Data.Repositories.EntityFramework;
 using xe_ideas.Data.Repositories.Interfaces;
+using xe_ideas.Models;
 using xe_ideas.Services;
 using xe_ideas.Services.Interfaces;
 using xe_ideas.Services.LookUp;
@@ -40,7 +36,8 @@ namespace xe_ideas
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
+                .AddProfileService<ProfileService>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
@@ -66,6 +63,8 @@ namespace xe_ideas
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IIdeaService, IdeaService>();
             services.AddScoped<ILookUpService, LookUpService>();
+            
+            services.AddTransient<IProfileService, ProfileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -89,15 +89,14 @@ namespace xe_ideas.Services
         {
             var item = this.ideaRepository.GetById(id);
 
-            // TODO fix this after we get the proper context.CurrentUser.Id value
-            // if (item != null)
-            // {
-            //     if (item.PrivacyId == IdeaPrivacy.Private.Id
-            //         && item.CreatorId != context.CurrentUser.Id)
-            //     {
-            //         throw new SecurityException($"User {context.CurrentUser.Id} is unauthorized to view Idea id {id}");
-            //     }
-            // }
+            if (item != null)
+            {
+                if (item.PrivacyId == IdeaPrivacy.Private.Id
+                    && item.CreatorId != context.CurrentUser.Id)
+                {
+                    throw new SecurityException($"User {context.CurrentUser.Id} is unauthorized to view Idea id {id}");
+                }
+            }
 
             return item;
         }
@@ -130,13 +129,9 @@ namespace xe_ideas.Services
                                .Skip(skip)
                                .Take(take);
 
-                // TODO check privacy
-                // return (user.UserName == context.CurrentUser.UserName)
-                //     ? list
-                //     : list.Where(x => x.PrivacyId == IdeaPrivacy.Public.Id);
-
-                // For now, return everything
-                return list;
+                return (user.Id == context.CurrentUser.Id)
+                    ? list
+                    : list.Where(x => x.PrivacyId == IdeaPrivacy.Public.Id);
             }
 
             return Enumerable.Empty<Idea>();

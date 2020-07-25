@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using xe_ideas.Models;
+using xe_ideas.Models.LookUp;
 using xe_ideas.Services.Interfaces;
 
 namespace xe_ideas.Controllers.Api
@@ -25,18 +27,29 @@ namespace xe_ideas.Controllers.Api
 
         [HttpGet]
         [Route("api/idea/{ideaId}")]
-        public Idea GetById(int ideaId)
+        public ActionResult<Idea> GetById(int ideaId)
         {
             this.Context = this.CreateApplicationContext((ClaimsIdentity)HttpContext.User.Identity);
 
-            var idea = this.ideaService.GetById(this.Context, ideaId);
+            try 
+            {
+                var idea = this.ideaService.GetById(this.Context, ideaId);
+                
+                // Get associated comments
+                idea.Comments = this.commentService.GetByIdeaId(this.Context, ideaId).ToList();
 
-            // TODO check to make sure the user has permission to view this
-            
-            // Get associated comments
-            idea.Comments = this.commentService.GetByIdeaId(this.Context, ideaId).ToList();
-
-            return idea;
+                return idea;
+            }
+            catch(SecurityException)
+            {
+                // If the user is not authorized to view this, return 404 (not found)
+                return StatusCode(404);
+            }
+            catch(Exception ex)
+            {
+                // Something else happened, return 500 (server error)
+                return StatusCode(500);
+            }
         }
 
         [HttpGet]
@@ -68,9 +81,8 @@ namespace xe_ideas.Controllers.Api
             {
                 CurrentUser = new ApplicationUser()
                 {
-                    // TODO add userId and username to JWT payload
-                    //Id = identity.Claims.FirstOrDefault(x => x.Type == "userId").Value,
-                    //UserName = identity.Claims.FirstOrDefault(x => x.Type == "username").Value
+                    Id = identity.Claims.FirstOrDefault(x => x.Type == "userId").Value,
+                    UserName = identity.Claims.FirstOrDefault(x => x.Type == "userName").Value
                 }
             };
         }

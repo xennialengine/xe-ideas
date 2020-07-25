@@ -52,13 +52,17 @@ export class IdeaDetails extends Component {
   }
 
   render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : this.renderTable(this.state.idea);
+    let contents = "";
+    let title = "";
 
-    let title = this.state.idea
-      ? `${this.state.idea.name}`
-      : "Content not found.";
+    if (this.state.loading) {
+      contents = <p><em>Loading...</em></p>;
+    } else if (Object.keys(this.state.idea).length === 0) {
+      title = "Idea not found";
+    } else {
+      contents = this.renderTable(this.state.idea);
+      title = this.state.idea.name;
+    }
 
     return (
       <div>
@@ -69,12 +73,22 @@ export class IdeaDetails extends Component {
   }
 
   async fetchData() {
-    const token = await authService.getAccessToken();
-    const response = await fetch(`api/idea/${this.props.match.params.ideaId}`, {
-      headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await response.json();
-    this.setState({ idea: data, loading: false });
+    authService.getAccessToken()
+      .then((token) => {
+        return fetch(`api/idea/${this.props.match.params.ideaId}`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+      })
+      .then((response) => {
+        if (response.status >= 400) {
+          return {};
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        this.setState({ idea: data, loading: false });
+      });
   }
 
   handleCommentAdded = async (comment) => {
