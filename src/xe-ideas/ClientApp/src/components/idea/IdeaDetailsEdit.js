@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import authService from '../api-authorization/AuthorizeService';
 
 export class IdeaDetailsEdit extends Component {
@@ -19,7 +18,7 @@ export class IdeaDetailsEdit extends Component {
 
   renderTable() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form>
         <table className='table table-striped' aria-labelledby="tabelLabel">
           <tbody>
             <tr>
