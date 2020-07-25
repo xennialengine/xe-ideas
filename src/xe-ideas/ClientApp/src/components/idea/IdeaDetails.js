@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import authService from '../api-authorization/AuthorizeService';
+import { CommentForm } from '../comment/CommentForm';
 
 export class IdeaDetails extends Component {
   static displayName = IdeaDetails.name;
 
   constructor(props) {
     super(props);
-    this.state = { idea: [], loading: true };
+    this.state = { idea: {}, loading: true };
+    
+    this.handleCommentAdded = this.handleCommentAdded.bind(this);
   }
 
   componentDidMount() {
     this.fetchData();
   }
 
-  static renderTable(idea) {
+  renderTable(idea) {
     return (
       <div>
         <p>By {idea.creatorId}</p>
@@ -39,8 +41,12 @@ export class IdeaDetails extends Component {
               )}
             </tbody>
           </table>
-          
         </div>
+                
+        <CommentForm 
+          ideaId={idea.id} 
+          creatorId={"d9ce1329-f6f9-4c4c-a566-a9b51e24d3f1"} // TODO replace this
+          onCommentAdded={this.handleCommentAdded}></CommentForm>
       </div>
     );
   }
@@ -48,7 +54,7 @@ export class IdeaDetails extends Component {
   render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : IdeaDetails.renderTable(this.state.idea);
+      : this.renderTable(this.state.idea);
 
     let title = this.state.idea
       ? `${this.state.idea.name}`
@@ -70,4 +76,11 @@ export class IdeaDetails extends Component {
     const data = await response.json();
     this.setState({ idea: data, loading: false });
   }
+
+  handleCommentAdded = async (comment) => {
+    var updated = this.state.idea;
+    updated.comments.push(comment);
+
+    this.setState({ idea: updated, loading: false });
+  };
 }
