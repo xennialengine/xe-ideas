@@ -48,7 +48,6 @@ export class CommentForm extends Component {
             : {},
           body: JSON.stringify({
             "ideaId": this.props.ideaId, 
-            "creatorId": this.props.creatorId, 
             "content": this.state.comment
           })
         });

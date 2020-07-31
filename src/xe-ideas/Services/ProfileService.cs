@@ -26,7 +26,7 @@ namespace xe_ideas.Services
             var claims = new List<Claim>
             {
                 new Claim("userId", user.Id),
-                new Claim("userName", user.NormalizedUserName),
+                new Claim("userName", user.UserName),
             };
 
             context.IssuedClaims.AddRange(claims);

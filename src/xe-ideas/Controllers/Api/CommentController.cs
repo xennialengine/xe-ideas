@@ -29,14 +29,18 @@ namespace xe_ideas.Controllers.Api
         {
             this.Context = this.CreateApplicationContext((ClaimsIdentity)HttpContext.User.Identity);
 
-            comment.CreatorId = comment.CreatorId; // TODO change this to use HttpContext.User.Identity
+            comment.CreatorId = this.Context.CurrentUser.Id;
             comment.Content = comment.Content;
             comment.CreatedDate = DateTime.UtcNow;
             comment.LastModifiedDate = DateTime.UtcNow;
             
             comment.Id = this.commentService.Create(this.Context, comment);
-            comment.Creator = this.applicationUserService.GetByUserId(this.Context, comment.CreatorId);
-            comment.Creator.RemoveSensitiveData();
+            
+            comment.Creator = new ApplicationUser 
+            {
+                Id = this.Context.CurrentUser.Id,
+                UserName = this.Context.CurrentUser.UserName
+            };
 
             return comment;
         }
@@ -48,9 +52,8 @@ namespace xe_ideas.Controllers.Api
             {
                 CurrentUser = new ApplicationUser()
                 {
-                    // TODO add userId and username to JWT payload
-                    //Id = identity.Claims.FirstOrDefault(x => x.Type == "userId").Value,
-                    //UserName = identity.Claims.FirstOrDefault(x => x.Type == "username").Value
+                    Id = identity.Claims.FirstOrDefault(x => x.Type == "userId").Value,
+                    UserName = identity.Claims.FirstOrDefault(x => x.Type == "userName").Value
                 }
             };
         }

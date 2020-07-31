@@ -46,7 +46,6 @@ export class IdeaDetails extends Component {
                 
         <CommentForm 
           ideaId={idea.id} 
-          creatorId={"d9ce1329-f6f9-4c4c-a566-a9b51e24d3f1"} // TODO replace this
           onCommentAdded={this.handleCommentAdded}></CommentForm>
       </div>
     );
