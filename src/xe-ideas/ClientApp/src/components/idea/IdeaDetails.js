@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import authService from '../api-authorization/AuthorizeService';
 import { CommentForm } from '../comment/CommentForm';
 
@@ -34,7 +35,7 @@ export class IdeaDetails extends Component {
             <tbody>
               {idea.comments.map(comment =>
                 <tr key={comment.id}>
-                  <td>{comment.creator.userName}</td>
+                  <td><Link to={`/u/${comment.creator?.userName}/ideas`}>{comment.creator?.userName}</Link></td>
                   <td>{comment.createdDate}</td>
                   <td>{comment.content}</td>
                 </tr>
