@@ -45,7 +45,7 @@ namespace xe_ideas.Controllers.Api
                 // If the user is not authorized to view this, return 404 (not found)
                 return StatusCode(404);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 // Something else happened, return 500 (server error)
                 return StatusCode(500);

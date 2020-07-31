@@ -30,7 +30,7 @@ export class IdeaList extends Component {
           {ideas.map(idea =>
             <tr key={idea.id}>
               <td>{idea.privacyId === 2 ? "\u2713" : ""}</td>
-              <td>{idea.creator?.userName}</td>
+              <td><Link to={`/u/${idea.creator?.userName}/ideas`}>{idea.creator?.userName}</Link></td>
               <td>{idea.name}</td>
               <td>{idea.description}</td>
               <td>
