@@ -60,6 +60,7 @@ namespace xe_ideas
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IIdeaRepository, IdeaRepository>();
 
+            services.AddScoped<IApplicationUserService, ApplicationUserService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IIdeaService, IdeaService>();
             services.AddScoped<ILookUpService, LookUpService>();

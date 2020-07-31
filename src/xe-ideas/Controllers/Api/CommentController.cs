@@ -14,10 +14,12 @@ namespace xe_ideas.Controllers.Api
     public class CommentController : ControllerBase
     {
         public ApplicationContext Context;
+        private readonly IApplicationUserService applicationUserService;
         private readonly ICommentService commentService;
 
-        public CommentController(ICommentService commentService)
+        public CommentController(IApplicationUserService applicationUserService , ICommentService commentService)
         {
+            this.applicationUserService = applicationUserService;
             this.commentService = commentService;
         }        
 
@@ -33,6 +35,8 @@ namespace xe_ideas.Controllers.Api
             comment.LastModifiedDate = DateTime.UtcNow;
             
             comment.Id = this.commentService.Create(this.Context, comment);
+            comment.Creator = this.applicationUserService.GetByUserId(this.Context, comment.CreatorId);
+            comment.Creator.RemoveSensitiveData();
 
             return comment;
         }

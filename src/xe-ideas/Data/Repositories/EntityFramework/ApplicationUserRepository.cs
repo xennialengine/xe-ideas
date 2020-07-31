@@ -16,6 +16,13 @@ namespace xe_ideas.Data.Repositories.EntityFramework
             this.Context = context;
         }
 
+        public IQueryable<IdentityUser> GetByUserId(string userId)
+        {
+            return (string.IsNullOrWhiteSpace(userId))
+                ? Enumerable.Empty<IdentityUser>().AsQueryable()
+                : this.Context.Users.Where(x => x.Id.ToUpper() == userId.ToUpper());
+        }
+
         public IQueryable<IdentityUser> GetByUsername(string username)
         {
             return (string.IsNullOrWhiteSpace(username))
