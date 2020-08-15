@@ -3,6 +3,7 @@ import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLi
 import { Link } from 'react-router-dom';
 import { LoginMenu } from './api-authorization/LoginMenu';
 import './NavMenu.css';
+import authService from './api-authorization/AuthorizeService';
 
 export class NavMenu extends Component {
   static displayName = NavMenu.name;
@@ -12,13 +13,32 @@ export class NavMenu extends Component {
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.state = {
-      collapsed: true
+      collapsed: true,
+      isAuthenticated: false,
     };
+  }
+
+  componentDidMount() {
+      this._subscription = authService.subscribe(() => this.populateState());
+      this.populateState();
+  }
+
+  componentWillUnmount() {
+      authService.unsubscribe(this._subscription);
+  }
+
+  async populateState() {
+      const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()])
+      this.setState({
+          collapsed: true,
+          isAuthenticated
+      });
   }
 
   toggleNavbar () {
     this.setState({
-      collapsed: !this.state.collapsed
+      collapsed: !this.state.collapsed,
+      isAuthenticated: this.state.isAuthenticated
     });
   }
 
@@ -34,12 +54,10 @@ export class NavMenu extends Component {
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
                 </NavItem>
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/u/superkarn@gmail.com/ideas">My Ideas</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/ideas">Browse</NavLink>
-                </NavItem>
+                
+                {this.state.isAuthenticated ? this.renderMyIdeas() : ""}
+                {this.state.isAuthenticated ? this.renderBrowse() : ""}
+
                 <LoginMenu>
                 </LoginMenu>
               </ul>
@@ -47,6 +65,22 @@ export class NavMenu extends Component {
           </Container>
         </Navbar>
       </header>
+    );
+  }
+
+  renderMyIdeas() {
+    return (
+      <NavItem>
+        <NavLink tag={Link} className="text-dark" to="/u/superkarn@gmail.com/ideas">My Ideas</NavLink>
+      </NavItem>
+    );
+  }
+
+  renderBrowse() {
+    return (
+      <NavItem>
+        <NavLink tag={Link} className="text-dark" to="/ideas">Browse</NavLink>
+      </NavItem>
     );
   }
 }
