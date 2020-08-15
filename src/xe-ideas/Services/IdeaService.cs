@@ -101,26 +101,37 @@ namespace xe_ideas.Services
             return item;
         }
 
-        public IEnumerable<Idea> GetByCreatorId(ApplicationContext context, string creatorId)
+        public IEnumerable<Idea> GetAllPublic(ApplicationContext context, int skip = 0, int take = 50)
         {
-            return this.ideaRepository.GetByCreatorId(creatorId);
+            return this.ideaRepository
+                       .GetAllPublic()
+                       .Skip(skip)
+                       .Take(take)
+                       .Include(x => x.Creator);
         }
 
-        public IEnumerable<Idea> GetByCreatorUsername(ApplicationContext context, string username)
+        public IEnumerable<Idea> GetByCreatorId(ApplicationContext context, string creatorId, int skip = 0, int take = 50)
+        {
+            return this.ideaRepository
+                       .GetByCreatorId(creatorId)
+                       .Skip(skip)
+                       .Take(take);
+        }
+
+        public IEnumerable<Idea> GetByCreatorUsername(ApplicationContext context, string username, int skip = 0, int take = 50)
         {
             var user = this.applicationUserRepository.GetByUsername(username).FirstOrDefault();
 
             if (user != null) 
             {
-                var list = this.ideaRepository.GetByCreatorId(user.Id);
+                var list = this.ideaRepository
+                               .GetByCreatorId(user.Id)
+                               .Skip(skip)
+                               .Take(take);
 
-                // TODO check privacy
-                // return (user.UserName == context.CurrentUser.UserName)
-                //     ? list
-                //     : list.Where(x => x.PrivacyId == IdeaPrivacy.Public.Id);
-
-                // For now, return everything
-                return list;
+                return (user.Id == context.CurrentUser.Id)
+                    ? list
+                    : list.Where(x => x.PrivacyId == IdeaPrivacy.Public.Id);
             }
 
             return Enumerable.Empty<Idea>();
@@ -144,10 +155,10 @@ namespace xe_ideas.Services
 
             // TODO allow Admin 
             // If the current user is not the item creator, don't allow
-            if (existingItem.CreatorId != context.CurrentUser.Id)
-            {
-                throw new SecurityException($"User {context.CurrentUser.Id} is unauthorized to update Idea id {item.Id}.");
-            }
+            // if (existingItem.CreatorId != context.CurrentUser.Id)
+            // {
+            //     throw new SecurityException($"User {context.CurrentUser.Id} is unauthorized to update Idea id {item.Id}.");
+            // }
 
             // TODO make this work with PATCH
             existingItem.Name = item.Name;

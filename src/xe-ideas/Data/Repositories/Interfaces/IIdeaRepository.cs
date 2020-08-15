@@ -10,6 +10,7 @@ namespace xe_ideas.Data.Repositories.Interfaces
         void DeleteById(int id);
         Idea GetById(int id);
         void Update(Idea item);
+        IQueryable<Idea> GetAllPublic();
         IQueryable<Idea> GetByCreatorId(string creatorId);
     }
 }

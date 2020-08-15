@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
 using xe_ideas.Models.LookUp;
 
 namespace xe_ideas.Models
@@ -11,7 +9,6 @@ namespace xe_ideas.Models
         public int Id { get; set; }
 
         public string CreatorId { get; set; }
-        [JsonIgnore]
         public ApplicationUser Creator { get; set; }
 
         public string Name { get; set; }

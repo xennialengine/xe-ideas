@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using xe_ideas.Data.Repositories.Interfaces;
 using xe_ideas.Models;
+using xe_ideas.Models.LookUp;
 
 namespace xe_ideas.Data.Repositories.EntityFramework
 {
@@ -44,17 +45,21 @@ namespace xe_ideas.Data.Repositories.EntityFramework
             this.Context.SaveChanges();
         }
 
+        public IQueryable<Idea> GetAllPublic()
+        {
+            return this.DbSet
+                .Where(x => x.PrivacyId == IdeaPrivacy.Public.Id);
+        }
+
         public Idea GetById(int id)
         {
             return this.DbSet
-                .Include(x => x.Privacy)
                 .SingleOrDefault(x => x.Id == id);
         }
 
         public IQueryable<Idea> GetByCreatorId(string creatorId)
         {
             return this.DbSet
-                .Include(x => x.Privacy)
                 .Where(x => x.CreatorId == creatorId);
         }
     }
