@@ -7,14 +7,51 @@ export class IdeaList extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { ideas: [], loading: true, username: this.props.match.params.username };
+    this.state = { 
+      ideas: [], 
+      loading: true,
+      userName: null
+    };
   }
 
   componentDidMount() {
     this.fetchData();
+    this._subscription = authService.subscribe(() => this.populateState());
+    this.populateState();
   }
 
-  static renderTable(ideas) {
+  componentWillUnmount() {
+      authService.unsubscribe(this._subscription);
+  }
+
+  async populateState() {
+      const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()])
+      this.setState({
+          collapsed: true,
+          isAuthenticated,
+          userId: user && user.userId,
+          userName: user && user.userName
+      });
+  }
+
+  render() {
+    let contents = this.state.loading
+      ? <p><em>Loading...</em></p>
+      : this.renderTable(this.state.ideas);
+
+    let title = this.state.username
+      ? `${this.state.username}'s Ideas`
+      : "All Public Ideas";
+
+    return (
+      <div>
+        <h1 id="tabelLabel">{title}</h1>
+        {contents}
+      </div>
+    );
+  }
+
+  renderTable(ideas) {
     return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
@@ -36,29 +73,16 @@ export class IdeaList extends Component {
               <td>
                   <Link to={`/i/${idea.id}/`}>View</Link>
                   |
-                  <Link to={`/i/${idea.id}/edit`}>Edit</Link>
+                  {idea.creatorId === this.state.userId 
+                    ? <Link to={`/i/${idea.id}/edit`}>Edit</Link>
+                    : "Edit"
+                  }
+                  
               </td>
             </tr>
           )}
         </tbody>
       </table>
-    );
-  }
-
-  render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : IdeaList.renderTable(this.state.ideas);
-
-    let title = this.state.username
-      ? `${this.state.username}'s Ideas`
-      : "All Public Ideas";
-
-    return (
-      <div>
-        <h1 id="tabelLabel">{title}</h1>
-        {contents}
-      </div>
     );
   }
 
