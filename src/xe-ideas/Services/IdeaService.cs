@@ -155,10 +155,10 @@ namespace xe_ideas.Services
 
             // TODO allow Admin 
             // If the current user is not the item creator, don't allow
-            // if (existingItem.CreatorId != context.CurrentUser.Id)
-            // {
-            //     throw new SecurityException($"User {context.CurrentUser.Id} is unauthorized to update Idea id {item.Id}.");
-            // }
+            if (existingItem.CreatorId != context.CurrentUser.Id)
+            {
+                throw new SecurityException($"User {context.CurrentUser.Id} is unauthorized to update Idea id {item.Id}.");
+            }
 
             // TODO make this work with PATCH
             existingItem.Name = item.Name;
