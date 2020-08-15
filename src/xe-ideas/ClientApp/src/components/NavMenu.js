@@ -15,6 +15,7 @@ export class NavMenu extends Component {
     this.state = {
       collapsed: true,
       isAuthenticated: false,
+      userName: null
     };
   }
 
@@ -31,14 +32,16 @@ export class NavMenu extends Component {
       const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()])
       this.setState({
           collapsed: true,
-          isAuthenticated
+          isAuthenticated,
+          userName: user && user.userName
       });
   }
 
   toggleNavbar () {
     this.setState({
       collapsed: !this.state.collapsed,
-      isAuthenticated: this.state.isAuthenticated
+      isAuthenticated: this.state.isAuthenticated,
+      userName: this.state.userName
     });
   }
 
@@ -71,7 +74,7 @@ export class NavMenu extends Component {
   renderMyIdeas() {
     return (
       <NavItem>
-        <NavLink tag={Link} className="text-dark" to="/u/superkarn@gmail.com/ideas">My Ideas</NavLink>
+        <NavLink tag={Link} className="text-dark" to={`/u/${this.state.userName}/ideas`}>My Ideas</NavLink>
       </NavItem>
     );
   }
