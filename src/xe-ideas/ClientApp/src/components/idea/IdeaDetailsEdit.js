@@ -44,7 +44,7 @@ export class IdeaDetailsEdit extends Component {
             </tr>
             <tr>
                 <th>Description</th>
-                <td><textarea name="description" value={this.state.idea.description} onChange={this.handleChange} /></td>
+                <td><textarea name="description" value={this.state.idea.description ?? ""} onChange={this.handleChange} /></td>
             </tr>
             <tr>
                 <th>Created Date</th>

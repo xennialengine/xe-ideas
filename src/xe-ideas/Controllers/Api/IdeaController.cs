@@ -67,11 +67,26 @@ namespace xe_ideas.Controllers.Api
 
         [HttpPut]
         [Route("api/idea/{ideaId}")]
-        public void Update(string username, Idea idea)
+        public ActionResult Update(string username, Idea idea)
         {
             this.Context = this.CreateApplicationContext((ClaimsIdentity)HttpContext.User.Identity);
+            
+            try 
+            {
+                this.ideaService.Update(this.Context, idea);
 
-            this.ideaService.Update(this.Context, idea);
+                return StatusCode(200);
+            }
+            catch(SecurityException)
+            {
+                // The user is not authorized to do this
+                return StatusCode(401);
+            }
+            catch(Exception)
+            {
+                // Something else happened, return 500 (server error)
+                return StatusCode(500);
+            }
         }
         
 
