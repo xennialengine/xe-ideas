@@ -15,13 +15,21 @@ export class IdeaList extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
     this._subscription = authService.subscribe(() => this.populateState());
-    this.populateState();
+    this.populateState()
+    .then(() => {
+      this.fetchData();
+    });
   }
 
   componentWillUnmount() {
       authService.unsubscribe(this._subscription);
+  }
+
+  componentDidUpdate = (prevProps) => {
+    if (this.props.match.params.userName !== prevProps.match.params.userName) {
+      this.fetchData();
+    }
   }
 
   async populateState() {
@@ -39,8 +47,8 @@ export class IdeaList extends Component {
       ? <p><em>Loading...</em></p>
       : this.renderTable(this.state.ideas);
 
-    let title = this.state.username
-      ? `${this.state.username}'s Ideas`
+    let title = this.state.userName
+      ? `${this.state.userName}'s Ideas`
       : "All Public Ideas";
 
     return (
@@ -87,15 +95,23 @@ export class IdeaList extends Component {
   }
 
   async fetchData() {
-    let userParam = this.state.username
-      ? `username=${this.state.username}`
-      : '';
+    authService.getAccessToken()
+      .then((token) => {
+        const userName = this.props.match.params.userName ?? '';
 
-    const token = await authService.getAccessToken();
-    const response = await fetch(`api/idea?${userParam}`, {
-      headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await response.json();
-    this.setState({ ideas: data, loading: false, username: this.props.match.params.username });
+        return fetch(`api/idea?userName=${userName}`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+      })
+      .then((response) => {
+        if (response.status >= 400) {
+          return {};
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        this.setState({ ideas: data, loading: false, userName: this.props.match.params.userName });
+      });
   }
 }
