@@ -49,14 +49,9 @@ namespace xe_ideas
                 .AddIdentityServerJwt();
 
             services.AddControllersWithViews()
-                .AddJsonOptions(options =>
-                {
-                    //options.JsonSerializerOptions.MaxDepth = 3;
-                    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+                .AddNewtonsoftJson(options => {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 });
-                //.AddNewtonsoftJson(options => {
-                //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                //});
 
             services.AddRazorPages();
 
