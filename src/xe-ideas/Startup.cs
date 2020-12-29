@@ -1,18 +1,22 @@
-using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
+using xe_ideas.Data;
+using xe_ideas.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using xe_ideas.Data;
-using xe_ideas.Data.Repositories.EntityFramework;
-using xe_ideas.Data.Repositories.Interfaces;
-using xe_ideas.Models;
 using xe_ideas.Services;
+using xe_ideas.Data.Repositories.Interfaces;
+using xe_ideas.Data.Repositories.EntityFramework;
 using xe_ideas.Services.Interfaces;
 using xe_ideas.Services.LookUp;
+using IdentityServer4.Services;
 
 namespace xe_ideas
 {
@@ -31,6 +35,8 @@ namespace xe_ideas
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -54,8 +60,7 @@ namespace xe_ideas
             {
                 configuration.RootPath = "ClientApp/build";
             });
-
-
+            
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IIdeaRepository, IdeaRepository>();
@@ -74,7 +79,7 @@ namespace xe_ideas
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
@@ -106,9 +111,6 @@ namespace xe_ideas
 
                 if (env.IsDevelopment())
                 {
-                    // Change this to run React separately from backend
-                    // https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetcore-3.1&tabs=visual-studio
-                    //spa.UseReactDevelopmentServer(npmScript: "start");
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });

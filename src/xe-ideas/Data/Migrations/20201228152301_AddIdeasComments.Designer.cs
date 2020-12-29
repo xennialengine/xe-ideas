@@ -10,48 +10,56 @@ using xe_ideas.Data;
 namespace xe_ideas.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200703171717_AddIdeasComments")]
+    [Migration("20201228152301_AddIdeasComments")]
     partial class AddIdeasComments
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
                 {
                     b.Property<string>("UserCode")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("ClientId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Data")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(50000);
+                        .HasMaxLength(50000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("DeviceCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("Expiration")
                         .IsRequired()
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("SessionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("SubjectId")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("UserCode");
 
@@ -66,39 +74,52 @@ namespace xe_ideas.Data.Migrations
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.PersistedGrant", b =>
                 {
                     b.Property<string>("Key")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("ClientId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("ConsumedTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Data")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(50000);
+                        .HasMaxLength(50000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("Expiration")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("SessionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("SubjectId")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Key");
 
                     b.HasIndex("Expiration");
 
                     b.HasIndex("SubjectId", "ClientId", "Type");
+
+                    b.HasIndex("SubjectId", "SessionId", "Type");
 
                     b.ToTable("PersistedGrants");
                 });
@@ -113,18 +134,18 @@ namespace xe_ideas.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
+                        .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
@@ -135,7 +156,7 @@ namespace xe_ideas.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -159,7 +180,7 @@ namespace xe_ideas.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -181,12 +202,12 @@ namespace xe_ideas.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -223,12 +244,12 @@ namespace xe_ideas.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -257,8 +278,8 @@ namespace xe_ideas.Data.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -275,12 +296,12 @@ namespace xe_ideas.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -299,17 +320,17 @@ namespace xe_ideas.Data.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
+                        .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("UserName")
@@ -340,14 +361,14 @@ namespace xe_ideas.Data.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000002",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a5b22a56-71eb-4c5c-957c-01c71ccffe70",
+                            ConcurrencyStamp = "b220b03d-bcaf-401c-b00c-7c506cba68a2",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "test@example.com",
                             EmailConfirmed = false,
                             IsActive = true,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "27c5b16b-c599-4f1b-aaff-99425cb1641c",
+                            SecurityStamp = "08fe4f48-ac09-4176-863e-26be3042b720",
                             TwoFactorEnabled = false,
                             UserName = "test"
                         },
@@ -355,14 +376,14 @@ namespace xe_ideas.Data.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000003",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7d9d126b-e792-4ba5-893d-116e58fcf19f",
+                            ConcurrencyStamp = "8db0e4db-e875-4058-8667-734db95d9aa2",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "test2@example.com",
                             EmailConfirmed = false,
                             IsActive = true,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c0d170f5-0ccf-4145-8c07-3839e73480d4",
+                            SecurityStamp = "4d2817fc-db85-4097-aad7-5ee58c097a07",
                             TwoFactorEnabled = false,
                             UserName = "test2"
                         });
@@ -373,7 +394,7 @@ namespace xe_ideas.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -410,10 +431,10 @@ namespace xe_ideas.Data.Migrations
                         {
                             Id = 1,
                             Content = "Test comment",
-                            CreatedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(8617),
+                            CreatedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(8010),
                             CreatorId = "6761d1ea-06bb-4c3e-b24e-8a7865bf094b",
                             IdeaId = 1,
-                            LastModifiedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(8621)
+                            LastModifiedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(8011)
                         });
                 });
 
@@ -422,7 +443,7 @@ namespace xe_ideas.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
@@ -468,53 +489,53 @@ namespace xe_ideas.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(6193),
+                            CreatedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(6845),
                             CreatorId = "6761d1ea-06bb-4c3e-b24e-8a7865bf094b",
                             Description = "Test Idea...",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(6210),
+                            LastModifiedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(6854),
                             Name = "Test Idea",
                             PrivacyId = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(7548),
+                            CreatedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(7481),
                             CreatorId = "6761d1ea-06bb-4c3e-b24e-8a7865bf094b",
                             Description = "blah",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(7552),
+                            LastModifiedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(7483),
                             Name = "Test 2",
                             PrivacyId = 2
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(7958),
+                            CreatedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(7665),
                             CreatorId = "6761d1ea-06bb-4c3e-b24e-8a7865bf094b",
                             Description = "blah blah blah",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(7961),
+                            LastModifiedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(7666),
                             Name = "Test 3",
                             PrivacyId = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(7983),
+                            CreatedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(7683),
                             CreatorId = "00000000-0000-0000-0000-000000000002",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(7984),
+                            LastModifiedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(7683),
                             Name = "Test 4",
                             PrivacyId = 1
                         },
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(8004),
+                            CreatedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(7699),
                             CreatorId = "00000000-0000-0000-0000-000000000002",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2020, 7, 3, 17, 17, 17, 262, DateTimeKind.Utc).AddTicks(8005),
+                            LastModifiedDate = new DateTime(2020, 12, 28, 15, 23, 1, 338, DateTimeKind.Utc).AddTicks(7700),
                             Name = "Test 5",
                             PrivacyId = 2
                         });
@@ -618,6 +639,10 @@ namespace xe_ideas.Data.Migrations
                         .HasForeignKey("IdeaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Idea");
                 });
 
             modelBuilder.Entity("xe_ideas.Models.Idea", b =>
@@ -633,6 +658,20 @@ namespace xe_ideas.Data.Migrations
                         .HasForeignKey("PrivacyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Privacy");
+                });
+
+            modelBuilder.Entity("xe_ideas.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Ideas");
+                });
+
+            modelBuilder.Entity("xe_ideas.Models.Idea", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
