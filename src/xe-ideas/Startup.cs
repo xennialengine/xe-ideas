@@ -11,6 +11,12 @@ using xe_ideas.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using xe_ideas.Services;
+using xe_ideas.Data.Repositories.Interfaces;
+using xe_ideas.Data.Repositories.EntityFramework;
+using xe_ideas.Services.Interfaces;
+using xe_ideas.Services.LookUp;
+using IdentityServer4.Services;
 
 namespace xe_ideas
 {
@@ -36,12 +42,22 @@ namespace xe_ideas
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
+                .AddProfileService<ProfileService>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddJsonOptions(options =>
+                {
+                    //options.JsonSerializerOptions.MaxDepth = 3;
+                    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+                });
+                //.AddNewtonsoftJson(options => {
+                //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                //});
+
             services.AddRazorPages();
 
             // In production, the React files will be served from this directory
@@ -49,6 +65,17 @@ namespace xe_ideas
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            
+            services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IIdeaRepository, IdeaRepository>();
+
+            services.AddScoped<IApplicationUserService, ApplicationUserService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IIdeaService, IdeaService>();
+            services.AddScoped<ILookUpService, LookUpService>();
+            
+            services.AddTransient<IProfileService, ProfileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
