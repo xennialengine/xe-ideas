@@ -27,7 +27,7 @@ export class IdeaDetailsEdit extends Component {
             </tr>
             <tr>
                 <th>owner</th>
-                <td>{this.state.idea.creatorId}</td>
+                <td>{this.state.idea.creator?.userName}</td>
             </tr>
             <tr>
                 <th>Public</th>

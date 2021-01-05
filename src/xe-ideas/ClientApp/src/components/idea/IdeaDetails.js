@@ -20,7 +20,7 @@ export class IdeaDetails extends Component {
   renderTable(idea) {
     return (
       <div>
-        <p>By {idea.creatorId}</p>
+        <p>By <Link to={`/u/${idea.creator?.userName}/ideas`}>{idea.creator?.userName}</Link></p>
         <p>{idea.description}</p>
         <div>
           Comments:
