@@ -103,38 +103,39 @@ namespace xe_ideas.Services
 
         public IEnumerable<Idea> GetAllPublic(ApplicationContext context, int skip = 0, int take = 50)
         {
-            return this.ideaRepository
-                       .GetAllPublic()
-                       .Skip(skip)
-                       .Take(take)
-                       .Include(x => x.Creator);
+            return this.ideaRepository.GetAllPublic()
+                        .OrderBy(x => x.Name)
+                        .Skip(skip)
+                        .Take(take)
+                        .Include(x => x.Creator);
         }
 
         public IEnumerable<Idea> GetByCreatorId(ApplicationContext context, string creatorId, int skip = 0, int take = 50)
         {
-            return this.ideaRepository
-                       .GetByCreatorId(creatorId)
-                       .Skip(skip)
-                       .Take(take);
+            return this.ideaRepository.GetByCreatorId(creatorId)
+                        .OrderBy(x => x.Name)
+                        .Skip(skip)
+                        .Take(take);
         }
 
         public IEnumerable<Idea> GetByCreatorUsername(ApplicationContext context, string username, int skip = 0, int take = 50)
         {
             var user = this.applicationUserRepository.GetByUsername(username).FirstOrDefault();
 
-            if (user != null) 
+            if (user == null) 
             {
-                var list = this.ideaRepository
-                               .GetByCreatorId(user.Id)
-                               .Skip(skip)
-                               .Take(take);
-
-                return (user.Id == context.CurrentUser.Id)
-                    ? list
-                    : list.Where(x => x.PrivacyId == IdeaPrivacy.Public.Id);
+                return Enumerable.Empty<Idea>();
             }
 
-            return Enumerable.Empty<Idea>();
+            var list = this.ideaRepository.GetByCreatorId(user.Id);
+
+            list = (user.Id == context.CurrentUser.Id)
+                ? list
+                : list.Where(x => x.PrivacyId == IdeaPrivacy.Public.Id);
+
+            return list.OrderBy(x => x.Name)
+                       .Skip(skip)
+                       .Take(take);
         }
 
         public void Update(ApplicationContext context, Idea item)
