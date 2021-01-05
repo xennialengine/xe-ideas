@@ -67,7 +67,6 @@ export class IdeaList extends Component {
             <th>Public</th>
             <th>User</th>
             <th>Idea</th>
-            <th>Description</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -77,7 +76,6 @@ export class IdeaList extends Component {
               <td>{idea.privacyId === 2 ? "\u2713" : ""}</td>
               <td><Link to={`/u/${idea.creator?.userName}/ideas`}>{idea.creator?.userName}</Link></td>
               <td>{idea.name}</td>
-              <td>{idea.description}</td>
               <td>
                   <Link to={`/i/${idea.id}/`}>View</Link>
                   |
