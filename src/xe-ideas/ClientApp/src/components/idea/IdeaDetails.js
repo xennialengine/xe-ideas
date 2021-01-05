@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import authService from '../api-authorization/AuthorizeService';
 import { CommentForm } from '../comment/CommentForm';
+import { CommentList } from '../comment/CommentList';
 
 export class IdeaDetails extends Component {
   static displayName = IdeaDetails.name;
@@ -22,27 +23,9 @@ export class IdeaDetails extends Component {
       <div>
         <p>By <Link to={`/u/${idea.creator?.userName}/ideas`}>{idea.creator?.userName}</Link></p>
         <p>{idea.description}</p>
-        <div>
-          Comments:
-          <table className='table table-striped' aria-labelledby="tabelLabel">
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Date</th>
-                <th>Comment</th>
-              </tr>
-            </thead>
-            <tbody>
-              {idea.comments.map(comment =>
-                <tr key={comment.id}>
-                  <td><Link to={`/u/${comment.creator?.userName}/ideas`}>{comment.creator?.userName}</Link></td>
-                  <td>{comment.createdDate}</td>
-                  <td>{comment.content}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+
+        <CommentList
+          idea={idea}></CommentList>
                 
         <CommentForm 
           ideaId={idea.id} 
